@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./libs/db.js";
 import authRoute from "./routes/authRoute.js";
 import cookieParser from "cookie-parser";
-
+import { protectRoute } from "./middleware/authMiddleware.js";
 dotenv.config();
 
 const app = express();
@@ -16,9 +16,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoute);
 
 // Private route example
-app.use("/api/private", (req, res) => {
-  res.status(200).json({ message: "This is a private route" });
-});
+app.use(protectRoute); // Middleware to protect routes
+app.use("/api/users", userRoute);
 
 connectDB().then(() => {
   console.log("Database connected, starting server...");
