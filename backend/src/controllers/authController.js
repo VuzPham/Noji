@@ -2,9 +2,11 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import Session from "../models/Session.js";
 
 const ACCESS_TOKEN_TTL = "30m"; // access token time to live
 const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; // refresh token time to live in milliseconds (14 days)
+
 export const signUp = async (req, res) => {
   try {
     // Extract user data from request body
@@ -52,7 +54,6 @@ export const signUp = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 export const signIn = async (req, res) => {
   try {
     // Input
@@ -86,7 +87,7 @@ export const signIn = async (req, res) => {
     await Session.create({
       userId: user._id,
       refreshToken,
-      expireAt: new Date(Date.now() + REFRESH_TOKEN_TTL), // hiện tại + 14 ngày
+      expireAt: new Date(Date.now() + REFRESH_TOKEN_TTL), // hiện tại + 14 ngày (Time to live)
     });
 
     // gửi refresh token về client dưới dạng httpOnly cookie
@@ -98,10 +99,30 @@ export const signIn = async (req, res) => {
     });
 
     return res.status(200).json({ message: "Sign-in successful", accessToken });
-
     // Response access token về client
   } catch (error) {
     console.log("Error in signIn:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const signOut = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(400).json({ message: "Refresh token not found" });
+    }
+    // Delete session from database
+    await Session.deleteOne({ refreshToken });
+    // Clear refresh token cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
+    return res.sendStatus(204);
+  } catch (error) {
+    console.log("Error in logOut:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
