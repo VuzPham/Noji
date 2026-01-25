@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+// Authorization
 // Middleware to protect routes:
 // req, res, next
 // next: hàm callback để chuyển quyền điều khiển sang middleware tiếp theo
@@ -26,21 +27,20 @@ export const protectRoute = (req, res, next) => {
     jwt.verify(
       token,
       process.env.ACCESS_TOKEN_SECRET,
+      // if token is valid, decodedUser will contain the payload data
+      // else err will contain the error
       async (err, decodedUser) => {
         if (err) {
           console.log("JWT verification error:", err);
-          return res
-            .status(401)
-            .json({ message: "Unauthorized: Invalid token" });
+          return res.status(403).json({ message: "Forbidden: Invalid token" });
         }
         // find user
+        // select to exclude password field
         const user = await User.findById(decodedUser.userId).select(
           "-password",
         );
         if (!user) {
-          return res
-            .status(401)
-            .json({ message: "Unauthorized: User not found" });
+          return res.status(401).json({ message: "User not found" });
         }
         // Token is valid, attach user info to request object
         req.user = user;
