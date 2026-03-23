@@ -39,6 +39,8 @@ export const protectRoute = (req, res, next) => {
         const user = await User.findById(decodedUser.userId).select(
           "-password",
         );
+        console.log("Decoded user from token:", decodedUser);
+        console.log("Found user:", user);
         if (!user) {
           return res.status(401).json({ message: "User not found" });
         }

@@ -7,6 +7,7 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 dotenv.config();
 
+// Open port for the server, default to 5000 if not specified in environment variables
 const app = express();
 const PORT = process.env.PORT || 5000;
 

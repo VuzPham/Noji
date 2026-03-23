@@ -5,12 +5,7 @@ export const authMe = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json({
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      displayName: user.displayName,
-    });
+    return res.status(200).json(user);
   } catch (error) {
     console.log("Error in authMe:", error);
     return res.status(500).json({ error: "Internal server error" });
