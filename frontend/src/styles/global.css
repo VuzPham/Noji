@@ -21,7 +21,7 @@
 
   /* Chat bubble variants */
   .chat-bubble-sent {
-    @apply bg-primary/80! text-[hsl(var(--chat-bubble-sent-foreground))]! shadow-[var(--shadow-bubble)];
+    @apply !bg-primary/80 !text-[hsl(var(--chat-bubble-sent-foreground))] shadow-[var(--shadow-bubble)];
   }
 
   .chat-bubble-received {

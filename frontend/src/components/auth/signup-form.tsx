@@ -9,16 +9,42 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+const SignupFormSchema = z.object({
+  email: z.email("Email is invalid"),
+  firstname: z.string().min(2, "FirstName is required").max(100),
+  lastname: z.string().min(2, "LastName at least 2 characters").max(100),
+  username: z.string().min(2, "Username at least 2 characters").max(100),
+  password: z.string().min(8, "Password is required"),
+  confirmPassword: z.string().min(8, "Confirm Password is required"),
+});
+
+// Infer the form values type from the Zod schema
+// ty SignupFormValues will have the same shape as the schema, with proper TypeScript types for each field
+type SignupFormValues = z.infer<typeof SignupFormSchema>;
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(SignupFormSchema), // zod schema validation
+  });
+  const onSubmit = (data: SignupFormValues) => {
+    console.log(data);
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Create your account</h1>
@@ -26,6 +52,59 @@ export function SignupForm({
                   Enter your email below to create your account
                 </p>
               </div>
+              {/* firstName / LastName */}
+              <Field>
+                <Field className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="firstname">First Name</FieldLabel>
+                    <Input
+                      id="firstname"
+                      type="text"
+                      required
+                      {...register("firstname")}
+                    />
+                    {errors.firstname && (
+                      <p className="text-sm text-destructive">
+                        {errors.firstname.message}
+                      </p>
+                    )}
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+                    <Input
+                      id="lastname"
+                      type="text"
+                      required
+                      {...register("lastname")}
+                    />
+                    {errors.lastname && (
+                      <p className="text-sm text-destructive">
+                        {errors.lastname.message}
+                      </p>
+                    )}
+                  </Field>
+                </Field>
+                <FieldDescription>
+                  Must be at least 8 characters long.
+                </FieldDescription>
+              </Field>
+              {/* Username */}
+              <Field>
+                <FieldLabel htmlFor="Username">Username</FieldLabel>
+                <Input
+                  id="username"
+                  type="username"
+                  required
+                  placeholder="Noji"
+                  {...register("username")}
+                />
+                {errors.username && (
+                  <p className="text-sm text-destructive">
+                    {errors.username.message}
+                  </p>
+                )}
+              </Field>
+              {/* email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
@@ -33,23 +112,50 @@ export function SignupForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  {...register("email")}
                 />
                 <FieldDescription>
                   We&apos;ll use this to contact you. We will not share your
                   email with anyone else.
                 </FieldDescription>
+                {errors.email && (
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
+                )}
               </Field>
+              {/* password */}
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      {...register("password")}
+                    />
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="confirm-password">
                       Confirm Password
                     </FieldLabel>
-                    <Input id="confirm-password" type="password" required />
+                    <Input
+                      id="confirm-password"
+                      type="password"
+                      required
+                      {...register("confirmPassword")}
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-sm text-destructive">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}{" "}
                   </Field>
                 </Field>
                 <FieldDescription>
@@ -57,7 +163,13 @@ export function SignupForm({
                 </FieldDescription>
               </Field>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full cursor-pointer"
+                >
+                  {isSubmitting ? "Creating your account..." : "Create Account"}
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
@@ -98,7 +210,7 @@ export function SignupForm({
           </form>
           <div className="relative hidden bg-muted md:block">
             <img
-              src="/placeholder.svg"
+              src="../../src/assets/image/placeholderSignUp.png"
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
