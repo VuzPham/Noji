@@ -12,14 +12,16 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useNavigate } from "react-router";
 
 const SignupFormSchema = z.object({
   email: z.email("Email is invalid"),
   firstname: z.string().min(2, "FirstName is required").max(100),
   lastname: z.string().min(2, "LastName at least 2 characters").max(100),
   username: z.string().min(2, "Username at least 2 characters").max(100),
-  password: z.string().min(8, "Password is required"),
-  confirmPassword: z.string().min(8, "Confirm Password is required"),
+  password: z.string().min(8, "Password at least 8 characters"),
+  confirmPassword: z.string().min(8, "Confirm Password at least 8 characters"),
 });
 
 // Infer the form values type from the Zod schema
@@ -29,6 +31,8 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { signUp } = useAuthStore();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -36,8 +40,16 @@ export function SignupForm({
   } = useForm<SignupFormValues>({
     resolver: zodResolver(SignupFormSchema), // zod schema validation
   });
-  const onSubmit = (data: SignupFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: SignupFormValues) => {
+    const { email, firstname, lastname, username, password } = data;
+    await signUp({
+      email,
+      firstname,
+      lastname,
+      username,
+      password,
+    });
+    navigate("/signin");
   };
 
   return (
@@ -52,7 +64,7 @@ export function SignupForm({
                   Enter your email below to create your account
                 </p>
               </div>
-              {/* firstName / LastName */}
+              {/* firstname / lastname */}
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>

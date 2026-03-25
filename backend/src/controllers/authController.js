@@ -10,8 +10,8 @@ const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; // refresh token time to liv
 export const signUp = async (req, res) => {
   try {
     // Extract user data from request body
-    const { username, email, password, firstName, lastName } = req.body;
-    if (!username || !email || !password || !firstName || !lastName) {
+    const { username, email, password, firstname, lastname } = req.body;
+    if (!username || !email || !password || !firstname || !lastname) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -36,7 +36,7 @@ export const signUp = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      displayName: `${firstName} ${lastName}`,
+      displayName: `${firstname} ${lastname}`,
     });
     await newUser.save();
     // Successfully create new user

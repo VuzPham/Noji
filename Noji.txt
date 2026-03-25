@@ -1,0 +1,23 @@
+pnpm init ( khởi tạo file package json) 
+
+control: logic 
+route: đường dẫn API
+middlewares: request & reponse
+libs:hàm tiện ích, thư viện
+model: định nghĩa schema và modal mongodb
+
+pnpm i jsonwebtoken bcrypt cookie-parser
+
+mongodb+srv://phamnguyenvu287_db_user:d7NefMBsSMZBtVZa@cluster0.qj0crgv.mongodb.net/
+
+node: 
+require('crypto').randomBytes(64).toString('hex')
+
+
+refreshToken :  					- accesstokne
+- dùng để tạo access token mới 				- dùng để xác thực người dùng
+- hết hạn lâu						- hết hạn nhanh
+- ko nhất thiết dùng JWT      				- dùng jwt
+- lưu trong cookie					- lưu trong bộ nhớ tạm (client)
+- lưu trong db session					- không lưu trong db
+- gửi qua cookie 					- gửi qua header

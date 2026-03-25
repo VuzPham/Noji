@@ -207,7 +207,6 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-@config "../tailwind.config.ts";
 
 @layer base {
   :root {
