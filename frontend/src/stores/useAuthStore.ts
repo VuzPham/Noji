@@ -4,11 +4,11 @@ import { authService } from "@/service/rest/authService";
 import type { signIn, signUp } from "@/types/auth";
 import type { AuthState } from "@/types/store";
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
   user: null,
   loading: false,
-
+  clearState: () => set({ accessToken: null, user: null, loading: false }),
   signUp: async (signUp: signUp) => {
     try {
       set({ loading: true });
@@ -35,6 +35,17 @@ export const useAuthStore = create<AuthState>((set) => ({
       toast.error("Failed to sign in. Please try again.");
     } finally {
       set({ loading: false });
+    }
+  },
+  signOut: async () => {
+    try {
+      get().clearState();
+      // Call API
+      await authService.signOut();
+      toast.success("Signed out successfully.");
+    } catch (error) {
+      console.error("Sign-out error:", error);
+      toast.error("Failed to sign out. Please try again.");
     }
   },
 }));

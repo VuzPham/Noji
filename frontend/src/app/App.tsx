@@ -19,6 +19,7 @@ function App() {
             <Route>
               <Route path="/signin" element={<SigninPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/dashboard" element={<ChatAppPage />} />
             </Route>
 
             {/* Protected Route (no layout or own layout later) */}
