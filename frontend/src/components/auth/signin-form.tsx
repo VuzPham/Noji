@@ -12,9 +12,11 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useNavigate } from "react-router";
 
 const SigninFormSchema = z.object({
-  email: z.email("Invalid email address"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 type SigninFormValues = z.infer<typeof SigninFormSchema>;
@@ -29,8 +31,11 @@ export function SigninForm({
   } = useForm<SigninFormValues>({
     resolver: zodResolver(SigninFormSchema),
   });
-  const onSubmit = (data: SigninFormValues) => {
-    console.log(data);
+  const { signIn } = useAuthStore();
+  const navigate = useNavigate();
+  const onSubmit = async (data: SigninFormValues) => {
+    await signIn(data);
+    navigate("/dashboard");
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -44,19 +49,19 @@ export function SigninForm({
                   Login to your Acme Inc account
                 </p>
               </div>
-              {/* email */}
+              {/* username */}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  type="text"
+                  placeholder="Username"
                   required
-                  {...register("email")}
+                  {...register("username")}
                 />
-                {errors.email && (
+                {errors.username && (
                   <p className="text-sm text-destructive">
-                    {errors.email.message}
+                    {errors.username.message}
                   </p>
                 )}
               </Field>

@@ -27,7 +27,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ loading: true });
       // Call API
-      await authService.signIn(signIn);
+      const { accessToken } = await authService.signIn(signIn);
+      console.log("Access Token:", accessToken);
+      set({ accessToken });
     } catch (error) {
       console.error("Sign-in error:", error);
       toast.error("Failed to sign in. Please try again.");
