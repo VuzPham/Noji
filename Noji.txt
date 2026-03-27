@@ -21,3 +21,25 @@ refreshToken :  					- accesstokne
 - lưu trong cookie					- lưu trong bộ nhớ tạm (client)
 - lưu trong db session					- không lưu trong db
 - gửi qua cookie 					- gửi qua header
+
+
+  const user = useAuthStore((s) => s.user); // Component chỉ re-render khi user thay đổi
+  const { user } = useAuthStore(); // Component sẽ re-render mỗi khi bất kỳ state nào trong store thay đổi
+
+-when reload page => state trong store về giá trị default
+state trong store chỉ nằm trong bộ nhớ tạm trình duyệt, trong khi đó refreshtoken vẫn còn hạn 
+- Dùng refreshtoken để tạo ra accesstoken mới
+- Mỗi khi không có accesstoken hoặc trả về 403(accesstoken hết hạn)
+- gửi refreshtoken lên lấy accesstoken sau đó tiến hành gọi api 
+- refreshtoken hết hạn thì ko thể gọi api => logout
+
+Code	Ý nghĩa
+400	Bad Request (data sai)
+401	Unauthorized (chưa login / token sai)
+403	Forbidden (không có quyền)
+404	Not Found
+405	Method Not Allowed
+408	Request Timeout
+409	Conflict
+422	Unprocessable Entity (validate fail)
+429	Too Many Requests

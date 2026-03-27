@@ -6,6 +6,7 @@ import SignupPage from "@/pages/signup-page";
 import SigninPage from "@/pages/signin-page";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 function App() {
   return (
@@ -16,9 +17,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Public Routes with shared layout */}
-            <Route>
-              <Route path="/signin" element={<SigninPage />} />
-              <Route path="/signup" element={<SignupPage />} />
+            <Route path="/signin" element={<SigninPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route element={<ProtectedRoute />}>
+              {/* // route cha: ProtectedRoute */}
               <Route path="/dashboard" element={<ChatAppPage />} />
             </Route>
 

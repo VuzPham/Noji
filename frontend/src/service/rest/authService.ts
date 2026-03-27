@@ -24,12 +24,33 @@ export const authService = {
       throw error;
     }
   },
-
   signOut: async () => {
     try {
       await api.post("/auth/signout", {}, { withCredentials: true });
     } catch (error) {
       console.error("Sign-out error:", error);
+      throw error;
+    }
+  },
+  fetchMe: async () => {
+    try {
+      const response = await api.get("/users/me", { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      console.error("Fetch me error:", error);
+      throw error;
+    }
+  },
+  refreshToken: async () => {
+    try {
+      const response = await api.post(
+        "/auth/refresh",
+        {},
+        { withCredentials: true },
+      );
+      return response.data.accessToken;
+    } catch (error) {
+      console.error("Refresh token error:", error);
       throw error;
     }
   },
