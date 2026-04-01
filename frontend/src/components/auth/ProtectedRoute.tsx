@@ -11,17 +11,14 @@ const ProtectedRoute = () => {
       if (!accessToken) {
         await refreshToken();
       }
-
       const { accessToken: latestToken, user: latestUser } =
         useAuthStore.getState();
 
       if (latestToken && !latestUser) {
         await fetchMe();
       }
-
       setInitializing(false);
     };
-
     init();
   }, [accessToken, refreshToken, fetchMe]);
 
@@ -35,7 +32,6 @@ const ProtectedRoute = () => {
   if (!accessToken) {
     return <Navigate to="/signin" replace />;
   }
-
   return <Outlet />;
 };
 

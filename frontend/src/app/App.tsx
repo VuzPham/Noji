@@ -23,7 +23,6 @@ function App() {
               {/* // route cha: ProtectedRoute */}
               <Route path="/dashboard" element={<ChatAppPage />} />
             </Route>
-
             {/* Protected Route (no layout or own layout later) */}
             <Route path="/chatapp" element={<ChatAppPage />} />
           </Routes>
