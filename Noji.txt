@@ -22,6 +22,10 @@ refreshToken :  					- accesstokne
 - lưu trong db session					- không lưu trong db
 - gửi qua cookie 					- gửi qua header
 
+rel="noopener noreferrer": requre when target ="_blank"
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">
+  Go to example
+</a>
 
   const user = useAuthStore((s) => s.user); // Component chỉ re-render khi user thay đổi
   const { user } = useAuthStore(); // Component sẽ re-render mỗi khi bất kỳ state nào trong store thay đổi
