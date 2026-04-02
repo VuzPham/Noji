@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { protectRoute } from "./middleware/authMiddleware.js";
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
+import friendRoute from "./routes/friendRoute.js";
 import cors from "cors";
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoute);
 // Private route example
 app.use(protectRoute); // Middleware to protect routes
 app.use("/api/users", userRoute);
+app.use("/api/friends", friendRoute);
 
 connectDB().then(() => {
   console.log("Database connected, starting server...");
