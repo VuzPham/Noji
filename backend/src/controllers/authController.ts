@@ -76,7 +76,11 @@ export const signIn = async (req, res) => {
     // accessToken secret
     const accessToken = jwt.sign(
       // payload, secret, options
-      { userId: user._id, username: user.username },
+      {
+        userId: user._id,
+        username: user.username,
+        dislayname: user.displayName,
+      },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: ACCESS_TOKEN_TTL }, // thời gian sống của access token
     );

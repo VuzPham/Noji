@@ -16,6 +16,7 @@ export const protectRoute = (req, res, next) => {
     }
     // example header Bearer <token>
     // => ['Bearer', '<token>'][1] => token
+
     const token = authHeader.split(" ")[1]; // Lấy token sau "Bearer "
     if (!token) {
       return res
@@ -34,8 +35,12 @@ export const protectRoute = (req, res, next) => {
           console.log("JWT verification error:", err);
           return res.status(403).json({ message: "Forbidden: Invalid token" });
         }
+        // decodeUser là giải mã của token, chứa thông tin userId, username, displayName, iat, exp
+        // decodedUser: { userId, username, displayName, iat, exp }
         // find user
         // select to exclude password field
+        // Mục đích của việc loại bỏ trường password là để đảm bảo rằng thông tin nhạy cảm này không bị lộ ra ngoài khi người dùng được xác thực thành công.
+        //  Bằng cách sử dụng .select("-password"), chúng ta có thể loại bỏ trường password khỏi kết quả truy vấn, giúp tăng cường bảo mật cho ứng dụng của chúng ta.
         const user = await User.findById(decodedUser.userId).select(
           "-password",
         );
